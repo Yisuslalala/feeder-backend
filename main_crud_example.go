@@ -27,17 +27,6 @@ func initDB() {
 	fmt.Println("Connected to MySQL successfully!")
 }
 
-func createUser(name, email string) {
-	query := "INSERT INTO users (name, email) VALUES (?, ?)"
-	result, err := db.Exec(query, name, email)
-	if err != nil {
-		log.Fatal("Error inserting user:", err)
-	}
-
-	id, _ := result.LastInsertId()
-	fmt.Println("User added with ID:", id)
-}
-
 func getUsers() {
 	rows, err := db.Query("SELECT id, name, email FROM users")
 	if err != nil {
@@ -56,30 +45,3 @@ func getUsers() {
 	}
 }
 
-func updateUser(id int, name, email string) {
-	query := "UPDATE users SET name = ?, email = ? WHERE id = ?"
-	_, err := db.Exec(query, name, email, id)
-	if err != nil {
-		log.Fatal("Error updating user:", err)
-	}
-
-	fmt.Println("User updated successfully.")
-}
-
-func deleteUser(id int) {
-	query := "DELETE FROM users WHERE id = ?"
-	_, err := db.Exec(query, id)
-	if err != nil {
-		log.Fatal("Error deleting user:", err)
-	}
-
-	fmt.Println("User deleted successfully.")
-}
-
-func main() {
-	initDB()
-	defer db.Close()
-
-	createTable()
-	getUsers()
-}

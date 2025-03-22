@@ -80,6 +80,5 @@ func main() {
 	initDB()
 	defer db.Close()
 
-	createTable()
 	getUsers()
 }

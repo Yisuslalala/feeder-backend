@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"enconding/json"
+	"encoding/json"
 	"log"
 	"net/http"
 

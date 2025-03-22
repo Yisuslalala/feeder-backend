@@ -81,5 +81,5 @@ func main() {
 	initDB()
 	defer db.Close()
 
-	getUsers()
+	getFeeds()
 }

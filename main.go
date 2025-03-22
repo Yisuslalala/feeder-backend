@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"enconding/json"
 	"log"
 	"net/http"
 
@@ -39,7 +40,7 @@ func getFeederHandler(w http.ResponseWriter, r *http.Request) {
 
   defer rows.Close()
 
-	var feders []Feeder
+	var feeders []Feeder
 
   for rows.Next() {
     var  feeder Feeder
@@ -54,7 +55,7 @@ func getFeederHandler(w http.ResponseWriter, r *http.Request) {
   }
 
   if err := rows.Err(); err != nil {
-    http.Error(w. "Error readind rows of feeder_details", http.StatusInternalServerError)
+    http.Error(w, "Error readind rows of feeder_details", http.StatusInternalServerError)
     return
   }
 

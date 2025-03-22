@@ -38,8 +38,8 @@ func createUser(name, email string) {
 	fmt.Println("User added with ID:", id)
 }
 
-func getUsers() {
-	rows, err := db.Query("SELECT id, name, email FROM users")
+func getFeeds() {
+	rows, err := db.Query("SELECT id, feed_at FROM feed_details")
 	if err != nil {
 		log.Fatal("Error fetching users:", err)
 	}
@@ -47,12 +47,13 @@ func getUsers() {
 
 	for rows.Next() {
 		var id int
-		var name, email string
-		err := rows.Scan(&id, &name, &email)
+		var feed_detail string
+		err := rows.Scan(&id, &feed_detail)
 		if err != nil {
 			log.Fatal("Error scanning data:", err)
 		}
-		fmt.Printf("ID: %d, Name: %s, Email: %s\n", id, name, email)
+    fmt.Printf("id: %d, feeded at: %s", id, feed_detail)
+		//fmt.Printf("ID: %d, Name: %s, Email: %s\n", id, name, email)
 	}
 }
 

@@ -60,7 +60,7 @@ func getFeederHandler(w http.ResponseWriter, r *http.Request) {
   }
 
   w.Header().Set("Content-Type", "application/json")
-  json.NewEnconder(w).Encode(feeders)
+  json.NewEncoder(w).Encode(feeders)
 
 }
 

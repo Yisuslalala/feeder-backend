@@ -2,84 +2,70 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
+	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
 )
 
 var db *sql.DB
+var dbDriver = "mysql"
+var dbUser = "yisus"
+var dbPass = "1235"
+var dbName = "feeder"
 
-func initDB() {
-	var err error
-	dsn := "yisus:1235@tcp(127.0.0.1:3306)/feeder"
-	db, err = sql.Open("mysql", dsn)
-
-	if err != nil {
-		log.Fatal("Error connection to database", err)
-	}	
-
-	err = db.Ping()
-	if err != nil {
-		log.Fatal("Database connection failed:", err)
-	}
-
-	fmt.Println("Connected to MySQL successfully!")
+type Feeder struct {
+	id int
+	feed_at string
 }
 
-func createUser(name, email string) {
-	query := "INSERT INTO users (name, email) VALUES (?, ?)"
-	result, err := db.Exec(query, name, email)
+func getFeederHandler(w http.ResponseWriter, r *http.Request) {
+  db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@tcp(192.168.1.125:3306)/"+dbName)
+
 	if err != nil {
-		log.Fatal("Error inserting user:", err)
+		http.Error(w, "Database connection failed", http.StatusInternalServerError)
+		return	
 	}
 
-	id, _ := result.LastInsertId()
-	fmt.Println("User added with ID:", id)
-}
+	defer db.Close()
 
-func getFeeds() {
-	rows, err := db.Query("SELECT id, feed_at FROM feed_details")
-	if err != nil {
-		log.Fatal("Error fetching users:", err)
-	}
-	defer rows.Close()
+  rows, err := db.Query("SELECT id, feed_at FROM feeder_details")
 
-	for rows.Next() {
-		var id int
-		var feed_detail string
-		err := rows.Scan(&id, &feed_detail)
-		if err != nil {
-			log.Fatal("Error scanning data:", err)
-		}
-    fmt.Printf("id: %d, feeded at: %s", id, feed_detail)
-		//fmt.Printf("ID: %d, Name: %s, Email: %s\n", id, name, email)
-	}
-}
+  if err != nil {
+    http.Error(w, "Failed to fetch feeder_details", http.StatusInternalServerError)
+    return
+  }
 
-func updateUser(id int, name, email string) {
-	query := "UPDATE users SET name = ?, email = ? WHERE id = ?"
-	_, err := db.Exec(query, name, email, id)
-	if err != nil {
-		log.Fatal("Error updating user:", err)
-	}
+  defer rows.Close()
 
-	fmt.Println("User updated successfully.")
-}
+	var feders []Feeder
 
-func deleteUser(id int) {
-	query := "DELETE FROM users WHERE id = ?"
-	_, err := db.Exec(query, id)
-	if err != nil {
-		log.Fatal("Error deleting user:", err)
-	}
+  for rows.Next() {
+    var  feeder Feeder
+    err := rows.Scan(&feeder.id, &feeder.feed_at)
 
-	fmt.Println("User deleted successfully.")
+    if err != nil {
+      http.Error(w, "Error scanning data from feeeder_details", http.StatusInternalServerError)
+      return
+    }
+  
+    feeders = append(feeders, feeder)
+  }
+
+  if err := rows.Err(); err != nil {
+    http.Error(w. "Error readind rows of feeder_details", http.StatusInternalServerError)
+    return
+  }
+
+  w.Header().Set("Content-Type", "application/json")
+  json.NewEnconder(w).Encode(feeders)
+
 }
 
 func main() {
-	initDB()
-	defer db.Close()
+	r := mux.NewRouter()
+	r.HandleFunc("/feeds", getFeederHandler).Methods("GET")
 
-	getFeeds()
+	log.Println("Server listening on: 8090")
 }

@@ -12,7 +12,7 @@ var db *sql.DB
 
 func initDB() {
 	var err error
-	dsn := "user:password@tcp(127.0.0.1:3306)/feeder_backend"
+	dsn := "yisus:1235@tcp(127.0.0.1:3306)/feeder_backend"
 	db, err = sql.Open("mysql", dsn)
 
 	if err != nil {

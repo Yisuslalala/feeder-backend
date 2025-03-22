@@ -16,7 +16,7 @@ func initDB() {
 	db, err = sql.Open("mysql", dsn)
 
 	if err != nil {
-		log.Fatal("Error connecting to database:", err)
+		log.Fatal("Error connection to database:", err)
 	}
 
 	err = db.Ping()

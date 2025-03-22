@@ -12,12 +12,12 @@ var db *sql.DB
 
 func initDB() {
 	var err error
-	dsn := "yisus:1235@tcp(127.0.0.1:3306)/feeder_backend"
+	dsn := "yisus:1235@tcp(127.0.0.1:3306)/feeder"
 	db, err = sql.Open("mysql", dsn)
 
 	if err != nil {
-		log.Fatal("Error connection to database:", err)
-	}
+		log.Fatal("Error connection to database", err)
+	}	
 
 	err = db.Ping()
 	if err != nil {

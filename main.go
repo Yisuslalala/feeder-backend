@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -64,9 +65,13 @@ func getFeederHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/feeds", getFeederHandler).Methods("GET")
+func homeLink(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Welcome home!")
+}
 
-	log.Println("Server listening on: 8090")
+func main() {
+	r := mux.NewRouter().StrictSlash(true)
+	r.HandleFunc("/feeds", getFeederHandler).Methods("GET")
+	r.HandleFunc("/", homeLink)
+	log.Println("Server listening on: 8090", r)
 }

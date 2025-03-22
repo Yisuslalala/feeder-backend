@@ -73,5 +73,5 @@ func main() {
 	r := mux.NewRouter().StrictSlash(true)
 	r.HandleFunc("/feeds", getFeederHandler).Methods("GET")
 	r.HandleFunc("/", homeLink)
-	log.Fatal(http.ListenAndServe(:8090), router)
+	log.Fatal(http.ListenAndServe(":8090", r))
 }

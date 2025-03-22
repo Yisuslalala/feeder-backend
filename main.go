@@ -70,8 +70,7 @@ func homeLink(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/feeds", getFeederHandler).Methods("GET")
-	r.HandleFunc("/", homeLink)
-	log.Fatal(http.ListenAndServe(":8090", r))
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/", homeLink)
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

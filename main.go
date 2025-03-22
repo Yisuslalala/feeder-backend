@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var db *sql.DB
+// var db *sql.DB
 var dbDriver = "mysql"
 var dbUser = "yisus"
 var dbPass = "1235"

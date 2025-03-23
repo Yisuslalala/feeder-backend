@@ -1,76 +1,88 @@
+
 package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"log"
-	"net/http"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-)
+	"net/http"
+	"encoding/json"
+)	
 
-// var db *sql.DB
-var dbDriver = "mysql"
-var dbUser = "yisus"
-var dbPass = "1235"
-var dbName = "feeder"
-
-type Feeder struct {
+type Detail struct {
 	id int
 	feed_at string
 }
 
-func getFeederHandler(w http.ResponseWriter, r *http.Request) {
-  db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@tcp(192.168.1.125:3306)/"+dbName)
-
+func main() {
+	db, err:= sql.Open("mysql", "yisus:1235@tcp(192.168.1.125:3306)/feeder")
 	if err != nil {
-		http.Error(w, "Database connection failed", http.StatusInternalServerError)
-		return	
+		fmt.Println("Error with database connection: " + err.Error())
+	} else {
+		err = db.Ping()
+		if err != nil {
+			fmt.Println("error making connection to DB, verify credentials" + err.Error())
+		}	
 	}
 
-	defer db.Close()
+	r := mux.NewRouter()
+	
+	r.HandleFunc("/details", func(w http.ResponseWriter, r *http.Request) {
+		
+		details, err := getDetails()
+		if err == nil {
+			responseSuccess(details, w)
+		} else {
+			responseError(err, w)
+		}
 
-  rows, err := db.Query("SELECT id, feed_at FROM feeder_details")
+	}).Methods(http.MethodGet)
 
-  if err != nil {
-    http.Error(w, "Failed to fetch feeder_details", http.StatusInternalServerError)
-    return
-  }
+	port := ":8000"
 
-  defer rows.Close()
+	s := &http.Server{
+	Handler: r,
+	Addr: port,
+	}
 
-	var feeders []Feeder
+	fmt.Println("Server started at " + port)
+	fmt.Println(s.ListenAndServe())
+}	
 
-  for rows.Next() {
-    var  feeder Feeder
-    err := rows.Scan(&feeder.id, &feeder.feed_at)
+func getDetails() ([]Detail, error) {
+	
+	details := []Detail{}
+		
+	db, err := sql.Open("mysql", "yisus:1235@tcp(192.168.1.125:3306)/feeder")
+	if err != nil {
+		return details, err
+	}
 
-    if err != nil {
-      http.Error(w, "Error scanning data from feeeder_details", http.StatusInternalServerError)
-      return
-    }
-  
-    feeders = append(feeders, feeder)
-  }
+	rows, err := db.Query("SELECT id, feed_at FROM feeder_details")
+	if err != nil {
+		return details, err
+	}
 
-  if err := rows.Err(); err != nil {
-    http.Error(w, "Error readind rows of feeder_details", http.StatusInternalServerError)
-    return
-  }
+	for rows.Next() {
+		var detail Detail
+		err = rows.Scan(&detail.id, &detail.feed_at)
+		if err != nil {
+			return details, err
+		}
 
-  w.Header().Set("Content-Type", "application/json")
-  json.NewEncoder(w).Encode(feeders)
+		details = append(details, detail)
+	}
 
+	return details, nil
 }
 
-func homeLink(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome home!")
+func responseSuccess(data interface{}, w http.ResponseWriter) {
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(data)
 }
 
-func main() {
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", homeLink)
-	log.Fatal(http.ListenAndServe(":8080", router))
+func responseError(err error, w http.ResponseWriter) {
+	w.WriteHeader(http.StatusInternalServerError)
+	json.NewEncoder(w).Encode(err.Error())
 }

@@ -31,7 +31,7 @@ func main() {
 		}	
 	}
 
-	broker := "tcp://localhost:1883" // Change if using a different host
+  broker := "tcp://192.168.1.125:1883" // Change if using a different host
 	clientID := "go_mqtt_server"
 
 	// Set up MQTT options
@@ -60,7 +60,7 @@ func main() {
 	}).Methods(http.MethodGet)
 	
 	r.HandleFunc("/feed", func(w http.ResponseWriter, r *http.Request) {
-		publishMessage("/motor", "activate")
+		publishMessage("/motor", "ON")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("Motora activated"))
 	})

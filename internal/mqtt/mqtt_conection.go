@@ -3,6 +3,7 @@ package mqtt
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -36,4 +37,16 @@ func InitMQTT() {
 		log.Fatal("MQTT Connection Error:", token.Error())
 	}
 	fmt.Println("Connected to MQTT broker")
+}
+
+func ActivateMotor(w http.ResponseWriter, r *http.Request) {
+	publishMessage("/motor", "ON")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Motor activated"))
+}
+
+func publishMessage(topic, payload string) {
+  token := mqttClient.Publish(topic, 0, false, payload)
+  token.Wait()
+  fmt.Println("Message published", payload)
 }

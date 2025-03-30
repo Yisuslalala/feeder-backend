@@ -2,9 +2,9 @@ package db
 
 import (
 	"database/sql"
+	"feeder-backend/internal/config"
 	"fmt"
 	"log"
-	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
@@ -20,11 +20,12 @@ func InitDB() {
 
 	// Construct connection string
 	ConnectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
-		os.Getenv("user"),
-		os.Getenv("pass"),
-		os.Getenv("host"),
-		os.Getenv("port"),
-		os.Getenv("db_name"))
+		config.DBConfig["user"],
+		config.DBConfig["pass"],
+		config.DBConfig["host"],
+		config.DBConfig["port"],
+		config.DBConfig["dbName"],
+	)
 
 	DB, err = sql.Open("mysql", ConnectionString)
 	if err != nil {

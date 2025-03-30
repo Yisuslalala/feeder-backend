@@ -1,7 +1,7 @@
-package main
+package models
 
 type Detail struct {
-	id int
-	feed_at string
+	ID int
+	FeedAt string
 }
 

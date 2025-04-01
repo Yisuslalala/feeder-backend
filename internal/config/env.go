@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	DBConfig map[string]string
-	MQTTConfig map[string]string
-	HTTPQueries map[string]string
+	DBConfig = make(map[string]string)
+	MQTTConfig = make(map[string]string)
+	HTTPQueries = make(map[string]string)
 )
 
 func LoadEnv() {
@@ -19,27 +19,20 @@ func LoadEnv() {
 		log.Fatal("Error loading .env file")
 	}
 
-	 DBConfig = map[string]string {
-		"user": os.Getenv("user"),
-		"pass": os.Getenv("pass"),
-		"host": os.Getenv("host"),
-		"port": os.Getenv("port"),
-		"dbName": os.Getenv("db_name"),
-	 }
+	DBConfig["user"] = os.Getenv("user")
+	DBConfig["pass"] = os.Getenv("pass")
+	DBConfig["host"] = os.Getenv("host")
+	DBConfig["port"] = os.Getenv("port")
+	DBConfig["dbName"] = os.Getenv("db_name")
 
-	 MQTTConfig = map[string]string {
-		"host": os.Getenv("host"),
-		"port": os.Getenv("port"),
-	 }
+	MQTTConfig["host"] = os.Getenv("host")
+	MQTTConfig["port"] = os.Getenv("port")
 
-	 HTTPQueries = map[string] string {
-		"user": os.Getenv("user"),
-		"pass": os.Getenv("pass"),
-		"port": os.Getenv("port"),
-		"host": os.Getenv("host"),
-		"dbName": os.Getenv("db_name"),
-	 }
-
+	HTTPQueries["user"] = os.Getenv("user")
+	HTTPQueries["pass"] = os.Getenv("pass")
+	HTTPQueries["port"] = os.Getenv("port")
+	HTTPQueries["host"] = os.Getenv("host")
+	HTTPQueries["dbName"] = os.Getenv("db_name")
 }
 
 

@@ -31,7 +31,7 @@ func LoadEnv() {
 
 	HTTPQueries["user"] = os.Getenv("user")
 	HTTPQueries["pass"] = os.Getenv("pass")
-	HTTPQueries["port"] = os.Getenv("port")
+	HTTPQueries["port"] = os.Getenv("sql_port")
 	HTTPQueries["host"] = os.Getenv("host")
 	HTTPQueries["dbName"] = os.Getenv("db_name")
 }

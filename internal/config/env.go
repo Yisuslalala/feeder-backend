@@ -22,11 +22,12 @@ func LoadEnv() {
 	DBConfig["user"] = os.Getenv("user")
 	DBConfig["pass"] = os.Getenv("pass")
 	DBConfig["host"] = os.Getenv("host")
-	DBConfig["port"] = os.Getenv("port")
+	DBConfig["port"] = os.Getenv("sql_port")
 	DBConfig["dbName"] = os.Getenv("db_name")
 
 	MQTTConfig["host"] = os.Getenv("host")
-	MQTTConfig["port"] = os.Getenv("port")
+  MQTTConfig["port"] = os.Getenv("mqtt_port")
+  MQTTConfig["clientId"] = os.Getenv("client_id")
 
 	HTTPQueries["user"] = os.Getenv("user")
 	HTTPQueries["pass"] = os.Getenv("pass")

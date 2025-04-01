@@ -2,30 +2,26 @@ package mqtt
 
 import (
 	"fmt"
-	"log"
+	"feeder-backend/internal/config"
+  "log"
 	"net/http"
-	"os"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/joho/godotenv"
 )
 
 var mqttClient mqtt.Client
 
 func InitMQTT() {
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+  config.LoadEnv()
 
 	ConnectionString := fmt.Sprintf("tcp://%s:%s", 
-	os.Getenv("host"),
-	os.Getenv("port"),
+	config.MQTTConfig["host"],
+  config.MQTTConfig["port"],
 	)
 
 	broker := ConnectionString
-	clientID := os.Getenv("client_id")
+	clientID := config.MQTTConfig["clientId"]
 
 	opts := mqtt.NewClientOptions().AddBroker(broker).SetClientID(clientID)
 

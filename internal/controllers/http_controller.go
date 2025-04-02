@@ -8,6 +8,8 @@ import (
 	"feeder-backend/internal/config"
 	"feeder-backend/internal/models"
 	"net/http"
+
+  "github.com/gorilla/mux"
 )
 
 func GetFeedDetails(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +60,7 @@ func getDetails() ([]models.Detail, error) {
 // TODO: Create function for adding a new feed detail
 func CreateDetail(w http.ResponseWriter, r *http.Request) {
   params := mux.Vars(r)
-  fmt.Print(`Params: ` + params)
+  fmt.Print(`Params: `, params)
 }
 func responseSuccess(data interface{}, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)

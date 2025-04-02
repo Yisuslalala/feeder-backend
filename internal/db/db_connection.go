@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"feeder-backend/internal/config"
 	"fmt"
+  "time"
 	"log"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -32,4 +33,9 @@ func InitDB() {
 	if err := DB.Ping(); err != nil {
 		log.Fatal("Database connection is not active:", err)
 	}
+
+  // Some documentation recommendations
+  DB.SetConnMaxLifetime(time.Minute * 3)
+  DB.SetMaxOpenConns(1)
+  DB.SetMaxIdleConns(1)
 }

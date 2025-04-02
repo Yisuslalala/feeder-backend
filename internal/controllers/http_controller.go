@@ -55,6 +55,11 @@ func getDetails() ([]models.Detail, error) {
 	return details, nil
 }
 
+// TODO: Create function for adding a new feed detail
+func CreateDetail(w http.ResponseWriter, r *http.Request) {
+  params := mux.Vars(r)
+  fmt.Print(`Params: ` + params)
+}
 func responseSuccess(data interface{}, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(data)

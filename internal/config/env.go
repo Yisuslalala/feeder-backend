@@ -11,6 +11,7 @@ var (
 	DBConfig = make(map[string]string)
 	MQTTConfig = make(map[string]string)
 	HTTPQueries = make(map[string]string)
+  ServerConfig = make(map[string]string)
 )
 
 func LoadEnv() {
@@ -34,6 +35,8 @@ func LoadEnv() {
 	HTTPQueries["port"] = os.Getenv("sql_port")
 	HTTPQueries["host"] = os.Getenv("host")
 	HTTPQueries["dbName"] = os.Getenv("db_name")
+
+  ServerConfig["port"] = os.Getenv("port")
 }
 
 

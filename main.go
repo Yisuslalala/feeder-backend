@@ -32,4 +32,9 @@ func main() {
   // s.ListenAndServe()
 	fmt.Println("Server started at " + port)
 	fmt.Println(s.ListenAndServe())
+
+  err := s.ListenAndServe()
+  if err != nil {
+    fmt.Println("Server failed start", err)
+  }
 }

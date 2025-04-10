@@ -15,7 +15,7 @@ func RegisterFeederRoutes(r *mux.Router) {
 
 func StartServer(r *mux.Router, s *http.Server) error {
   
-  var port := config.ServerConfig["port"]
+  var port = config.ServerConfig["port"]
 	s := &http.Server{
 	Handler: r,
 	Addr: port,

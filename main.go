@@ -28,7 +28,8 @@ func main() {
 	Handler: r,
 	Addr: port,
 	}
-	
+
+  s.ListenAndServe()
 	fmt.Println("Server started at " + port)
 	fmt.Println(s.ListenAndServe())
 }

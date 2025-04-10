@@ -21,20 +21,7 @@ func main() {
 	r := mux.NewRouter()
 	
 	routes.RegisterFeederRoutes(r)
-
-	port := ":8000"
-
-	s := &http.Server{
-	Handler: r,
-	Addr: port,
-	}
-
-  // s.ListenAndServe()
-	fmt.Println("Server started at " + port)
-	fmt.Println(s.ListenAndServe())
-
-  err := s.ListenAndServe()
-  if err != nil {
-    fmt.Println("Server failed start", err)
-  }
+  
+ routes.StartServer(r, s)  
+	
 }

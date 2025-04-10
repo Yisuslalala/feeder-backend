@@ -22,6 +22,7 @@ func main() {
 	
 	routes.RegisterFeederRoutes(r)
   
- routes.StartServer(r, s)  
-	
+  s := http.Server{}
+
+  routes.StartServer(r, s)
 }

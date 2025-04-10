@@ -4,7 +4,6 @@ import (
 	"feeder-backend/internal/db"
 	"feeder-backend/internal/mqtt"
 	routes "feeder-backend/internal/routers"
-	"fmt"
 	"net/http"
 
 	_ "github.com/eclipse/paho.mqtt.golang"
@@ -22,7 +21,7 @@ func main() {
 	
 	routes.RegisterFeederRoutes(r)
   
-  s := http.Server{}
+  s := &http.Server{}
 
   routes.StartServer(r, s)
 }

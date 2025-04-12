@@ -12,6 +12,7 @@ var (
 	MQTTConfig = make(map[string]string)
 	HTTPQueries = make(map[string]string)
   ServerConfig = make(map[string]string)
+  ClientConfig = make(map[string]string)
 )
 
 func LoadEnv() {
@@ -38,6 +39,9 @@ func LoadEnv() {
   
   ServerConfig["host"] = os.Getenv("host")
   ServerConfig["port"] = os.Getenv("port")
+
+  ClientConfig["clientHost"] = os.Getenv("client_host")
+  ClientConfig["clientPort"] = os.Getenv("client_port")
 }
 
 

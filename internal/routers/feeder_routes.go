@@ -19,8 +19,6 @@ func StartServer(r *mux.Router, s *http.Server) error {
   
   var port = ":" + config.ServerConfig["port"]
 
-  fmt.Println("port", port)
-  
 	s.Handler = r
 	s.Addr = port
 

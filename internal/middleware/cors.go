@@ -4,21 +4,20 @@ import (
   "github.com/gorilla/handlers"
   "net/http"
 
-  "/feeder-backend/internal/config"
+  "feeder-backend/internal/config"
 )
 
-func SetupCORS(h *http.Handler) http.Handler {
+func SetupCORS(h http.Handler) http.Handler {
 
   var host = config.ServerConfig["host"]
   var port = config.ServerConfig["port"]
 
-  var url = "http://" + host + port
+  var url = "http://" + host  + ":" + port
 
-
-  return h.CORS(
-    h.AllowCredentials(),
-    h.AllowedMethods([]string{"GET, POST", "PUT", "DELETE", "OPTIONS"}),
-    h.AllowedOrigins([]string{url}),
-    h.AllowedHeaders([]string{"Content-Type"}), 
-  )h
+  return handlers.CORS(
+    handlers.AllowCredentials(),
+    handlers.AllowedMethods([]string{"GET, POST", "PUT", "DELETE", "OPTIONS"}),
+    handlers.AllowedOrigins([]string{url}),
+    handlers.AllowedHeaders([]string{"Content-Type"}), 
+  )(h)
 }

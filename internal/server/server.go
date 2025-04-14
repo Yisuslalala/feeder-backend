@@ -22,7 +22,7 @@ func StartServer(r *mux.Router) error {
 	// fmt.Println(s.ListenAndServe())
 
   corsHandler := cors.SetupCORS(r)
-
+  fmt.Printf("corsHandler %s \n", corsHandler)
   s := HandlerServer(port, corsHandler)
   
   fmt.Printf("Server: %+v \n", s)

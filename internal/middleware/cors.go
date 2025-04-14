@@ -10,14 +10,16 @@ import (
 func SetupCORS(h http.Handler) http.Handler {
 
   var host = config.ServerConfig["host"]
-  var port = config.ServerConfig["port"]
+  var clientPort = config.ClientConfig["clientPort"]
 
-  var url = "http://" + host  + ":" + port
+  var serverUrl = "http://" + host  + ":" + clientPort
+  var localhostUrl = "http://localhost:" + clientPort
 
   return handlers.CORS(
     handlers.AllowCredentials(),
     handlers.AllowedMethods([]string{"GET, POST", "PUT", "DELETE", "OPTIONS"}),
-    handlers.AllowedOrigins([]string{url}),
+   // Add the ip's of the frontend for local development or production
+    handlers.AllowedOrigins([]string{serverUrl, localhostUrl}),
     handlers.AllowedHeaders([]string{"Content-Type"}), 
   )(h)
 }

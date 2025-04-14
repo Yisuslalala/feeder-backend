@@ -11,22 +11,14 @@ import (
 )
 
 func StartServer(r *mux.Router) error {
-  
+
   var port = ":" + config.ServerConfig["port"]
 
-	// s.Handler = r
-	// s.Addr = port
-
-  // s.ListenAndServe()
 	fmt.Println("Server started at " + port)
-	// fmt.Println(s.ListenAndServe())
 
   corsHandler := cors.SetupCORS(r)
-  fmt.Printf("corsHandler %s \n", corsHandler)
   s := HandlerServer(port, corsHandler)
-  
-  fmt.Printf("Server: %+v \n", s)
-  fmt.Printf("Handler: %T \n", s.Handler)
+
   err := s.ListenAndServe()
   if err != nil {
     fmt.Println("Server failed start", err)

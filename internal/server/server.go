@@ -25,8 +25,7 @@ func StartServer(r *mux.Router) error {
 
   s := HandlerServer(port, corsHandler)
   
-  fmt.Print("Server: ")
-  fmt.Println(s)
+  fmt.Printf("Server: %+v \n", s)
 
   err := s.ListenAndServe()
   if err != nil {

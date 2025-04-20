@@ -1,7 +1,7 @@
 package models
 
 type Detail struct {
-	ID int
-	FeedAt string
+	id int
+	feedAt string
 }
 

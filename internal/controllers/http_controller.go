@@ -46,7 +46,7 @@ func getDetails() ([]models.Detail, error) {
 
 	for rows.Next() {
 		var detail models.Detail
-		err = rows.Scan(&detail.ID, &detail.FeedAt)
+		err = rows.Scan(&detail.id, &detail.feedAt)
 		if err != nil {
 			return details, err
 		}

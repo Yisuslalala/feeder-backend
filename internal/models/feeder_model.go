@@ -1,7 +1,7 @@
 package models
 
 type Detail struct {
-	id int
-	feedAt string
+  ID int `json:id`
+  FeedAt string `json:feedAt`
 }
 

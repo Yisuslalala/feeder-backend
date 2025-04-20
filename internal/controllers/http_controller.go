@@ -64,7 +64,7 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
 }
 func responseSuccess(data interface{}, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
-  w.Header().Set(`Content-Type`, `application/json`)
+  w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(data)
 }
 

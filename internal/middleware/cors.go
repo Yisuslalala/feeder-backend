@@ -17,7 +17,7 @@ func SetupCORS(h http.Handler) http.Handler {
 
   return handlers.CORS(
     handlers.AllowCredentials(),
-    handlers.AllowedMethods([]string{"GET, POST", "PUT", "DELETE", "OPTIONS"}),
+    handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
    // Add the ip's of the frontend for local development or production
     handlers.AllowedOrigins([]string{serverUrl, localhostUrl}),
     handlers.AllowedHeaders([]string{"Content-Type"}), 

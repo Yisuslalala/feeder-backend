@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"feeder-backend/internal/config"
   "log"
-	"net/http"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-var mqttClient mqtt.Client
+var MqttClient mqtt.Client
 
 func InitMQTT() {
 
@@ -26,8 +25,8 @@ func InitMQTT() {
 	opts := mqtt.NewClientOptions().AddBroker(broker).SetClientID(clientID)
 
 	// Create and connect the MQTT client
-	mqttClient = mqtt.NewClient(opts)
-	token := mqttClient.Connect()
+	MqttClient = mqtt.NewClient(opts)
+	token := MqttClient.Connect()
 	token.Wait()
 	if token.Error() != nil {
 		log.Fatal("MQTT Connection Error:", token.Error())
@@ -35,14 +34,3 @@ func InitMQTT() {
 	fmt.Println("Connected to MQTT broker")
 }
 
-func ActivateMotor(w http.ResponseWriter, r *http.Request) {
-	publishMessage("/motor", "ON")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Motor activated"))
-}
-
-func publishMessage(topic, payload string) {
-  token := mqttClient.Publish(topic, 0, false, payload)
-  token.Wait()
-  fmt.Println("Message published", payload)
-}

@@ -80,8 +80,8 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
   }
 
   // Execute it and handle errors
-  res, err := query.Exec()
-  fmt.Println("res", res)
+  _, err = query.Exec()
+  // fmt.Println("res", res)
   if err != nil {
     http.Error(w, "Failed to create feeding", http.StatusInternalServerError)
   }

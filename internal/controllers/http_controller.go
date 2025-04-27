@@ -86,6 +86,9 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
     http.Error(w, "Failed to create feeding", http.StatusInternalServerError)
   }
 
+  // Add move motor mqtt controller
+  
+
   w.WriteHeader(http.StatusCreated)
   fmt.Fprintln(w, "Feeding detail created successfully")
 }

@@ -7,13 +7,25 @@ import (
 )
 
 func ActivateMotor(w http.ResponseWriter, r *http.Request) {
-	publishMessage("/motor", "ON")
+  err := PublishMessage("/motor", "ON")
+
+  if err != nil {
+    http.Error(w, "Failed to activate motor", http.StatusInternalServerError)
+    return
+  }
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Motor activated"))
 }
 
-func publishMessage(topic, payload string) {
+func PublishMessage(topic, payload string) error {
   token := mqtt.MqttClient.Publish(topic, 0, false, payload)
   token.Wait()
+
+  if token.Error() != nil {
+    return token.Error()
+  }
+
   fmt.Println("Message published", payload)
+  return nil
 }

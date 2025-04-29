@@ -20,7 +20,7 @@ func ActivateMotor(w http.ResponseWriter, r *http.Request) {
 
 func PublishMessage(topic, payload string) error {
   token := mqtt.MqttClient.Publish(topic, 0, false, payload)
-  // token.Wait()
+  token.Wait()
 
   if token.Error() != nil {
     return token.Error()

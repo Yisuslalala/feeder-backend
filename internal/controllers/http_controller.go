@@ -94,7 +94,7 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
   // }
 
   w.WriteHeader(http.StatusCreated)
-  fmt.Fprintln(w, "Feeding detail created successfully")
+  fmt.Println("Feeding detail created successfully")
 }
 
 func responseSuccess(data interface{}, w http.ResponseWriter) {

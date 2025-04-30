@@ -87,11 +87,11 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
   }
 
   // Add move motor mqtt controller
-  err = PublishMessage("/motor", "ON")
-  if err != nil {
-    http.Error(w, "Failed to activate motor" , http.StatusInternalServerError)
-    return
-  }
+  PublishMessage("/motor", "ON")
+  // if err != nil {
+    // http.Error(w, "Failed to activate motor" , http.StatusInternalServerError)
+    // return
+  // }
 
   w.WriteHeader(http.StatusCreated)
   fmt.Fprintln(w, "Feeding detail created successfully")

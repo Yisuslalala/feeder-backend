@@ -79,8 +79,10 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
     fmt.Println("Error at prepare sql query")
   }
 
+  defer query.Close()
+
   // Execute it and handle errors
-  _, err = query.Exec()
+  res, err := query.Exec()
   // fmt.Println("res", res)
   if err != nil {
     http.Error(w, "Failed to create feeding", http.StatusInternalServerError)
@@ -94,6 +96,7 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
   }
 
   w.WriteHeader(http.StatusCreated)
+  json.NewEncoder(w).Encode(res)
   fmt.Println("Feeding detail created successfully")
 }
 

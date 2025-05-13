@@ -72,20 +72,38 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
   db, err := sql.Open("mysql", endpointString)
   if err != nil {
     fmt.Println("Error at opening sql interface")
+    return
   }
   // Prepare sql query
   query, err := db.Prepare("INSERT INTO feeder_details VALUES()")
   if err != nil {
     fmt.Println("Error at prepare sql query")
+    return
   }
 
   defer query.Close()
 
   // Execute it and handle errors
-  res, err := query.Exec()
+  newFeed, err := query.Exec()
   // fmt.Println("res", res)
   if err != nil {
     http.Error(w, "Failed to create feeding", http.StatusInternalServerError)
+    return
+  }
+
+  lastId, err := newFeed.LastInsertId()
+  if err != nil {
+    http.Error(w, "Failed to get last id", http.StatusInternalServerError)
+    return
+  }
+
+  // last row inserted
+  var lastFeed models.Detail
+  lastFeedQuery := "SELECT id, feed_at FROM feeder_details WHERE id = ?"
+  err = db.QueryRow(lastFeedQuery, lastId).Scan(&lastFeed.ID, &lastFeed.FeedAt)
+  if err != nil {
+    http.Error(w, "Failed to retrieve last detail inserted", http.StatusInternalServerError)
+    return
   }
 
   // Add move motor mqtt controller
@@ -96,7 +114,7 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
   }
 
   w.WriteHeader(http.StatusCreated)
-  json.NewEncoder(w).Encode(res)
+  json.NewEncoder(w).Encode(lastFeed)
   fmt.Println("Feeding detail created successfully")
 }
 

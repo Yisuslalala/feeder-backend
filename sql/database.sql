@@ -1,11 +1,8 @@
-CREATE DATABASE IF NOT EXISTS feeder;
-
-USE feeder;
 
 CREATE TABLE IF NOT EXISTS  feeder_details(
   id INT AUTO_INCREMENT PRIMARY KEY,
   feed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS users (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -17,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   deleted_at TIMESTAMP NULL,
 
   CONSTRAINT uq_users_email UNIQUE(email)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS houses (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -28,7 +25,7 @@ CREATE TABLE IF NOT EXISTS houses (
 
   CONSTRAINT fk_houses_owner
     FOREIGN KEY (owner_user_id) REFERENCES users(id)
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS feeders (
   id BIGINT AUTO_INCREMENT,
@@ -45,7 +42,7 @@ CREATE TABLE IF NOT EXISTS feeders (
     REFERENCES houses(id),
   CONSTRAINT uq_feeders_mac UNIQUE (mac_address)
 
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS house_users (
   house_id BIGINT NOT NULL,
@@ -67,5 +64,5 @@ CREATE TABLE IF NOT EXISTS house_users (
     REFERENCES users(id)
     ON DELETE CASCADE
     ON UPDATE CASCADE
-);
+) ENGINE=InnoDB;
 

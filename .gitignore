@@ -1,2 +1,4 @@
 env
 /feeder-backend
+.env
+.env.*

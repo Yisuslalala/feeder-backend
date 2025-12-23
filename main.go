@@ -14,6 +14,7 @@ import (
 
 func main() {
 
+	config.LoadEnv()
   db.InitDB()
 	mqtt.InitMQTT()
 

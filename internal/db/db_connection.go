@@ -14,8 +14,7 @@ var DB *sql.DB
 
 func InitDB() {
   // fmt.Println("DBConfig content:", config.DBConfig)
-  config.LoadEnv()
-
+ 
 	ConnectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		config.DBConfig["user"],
 		config.DBConfig["pass"],

@@ -16,32 +16,32 @@ var (
 )
 
 func LoadEnv() {
-	err := godotenv.Load(".env")
+	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	DBConfig["user"] = os.Getenv("user")
-	DBConfig["pass"] = os.Getenv("pass")
-	DBConfig["host"] = os.Getenv("host")
-	DBConfig["port"] = os.Getenv("sql_port")
-	DBConfig["dbName"] = os.Getenv("db_name")
+	DBConfig["user"] = os.Getenv("DB_USER")
+	DBConfig["pass"] = os.Getenv("DB_PASS")
+	DBConfig["host"] = os.Getenv("DB_HOST")
+	DBConfig["port"] = os.Getenv("DB_PORT")
+	DBConfig["dbName"] = os.Getenv("DB_NAME")
 
-	MQTTConfig["host"] = os.Getenv("host")
-  MQTTConfig["port"] = os.Getenv("mqtt_port")
-  MQTTConfig["clientId"] = os.Getenv("client_id")
+	MQTTConfig["host"] = os.Getenv("DB_PORT")
+  MQTTConfig["port"] = os.Getenv("MQTT_PORT")
+	MQTTConfig["clientId"] = os.Getenv("MQTT_CLIENT_ID")
 
-	HTTPQueries["user"] = os.Getenv("user")
-	HTTPQueries["pass"] = os.Getenv("pass")
-	HTTPQueries["port"] = os.Getenv("sql_port")
-	HTTPQueries["host"] = os.Getenv("host")
-	HTTPQueries["dbName"] = os.Getenv("db_name")
+	HTTPQueries["user"] = os.Getenv("DB_USER")
+	HTTPQueries["pass"] = os.Getenv("DB_PASS")
+	HTTPQueries["port"] = os.Getenv("DB_PORT")
+	HTTPQueries["host"] = os.Getenv("DB_HOST")
+	HTTPQueries["dbName"] = os.Getenv("DB_NAME")
   
-  ServerConfig["host"] = os.Getenv("host")
-  ServerConfig["port"] = os.Getenv("port")
+  ServerConfig["host"] = os.Getenv("DB_HOST")
+  ServerConfig["port"] = os.Getenv("DB_PORT")
 
-  ClientConfig["clientHost"] = os.Getenv("client_host")
-  ClientConfig["clientPort"] = os.Getenv("client_port")
+  ClientConfig["clientHost"] = os.Getenv("CLIENT_ORIGIN")
+	ClientConfig["clientPort"] = os.Getenv("CLIENT_PORT")
 }
 
 

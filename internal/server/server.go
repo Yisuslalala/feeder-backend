@@ -13,6 +13,10 @@ import (
 func StartServer(r *mux.Router) error {
 
   var port = ":" + config.ServerConfig["port"]
+	
+	if port == "" {
+		port = "8000"
+	}
 
 	fmt.Println("Server started at " + port)
 

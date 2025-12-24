@@ -20,9 +20,9 @@ func GetFeedDetails(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getDetails() ([]models.Detail, error) {
+func getDetails() ([]models.FeederDetail, error) {
 	
-  details := []models.Detail{}
+  details := []models.FeederDetail{}
 	
 	endpointString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 	config.HTTPQueries["user"],
@@ -43,7 +43,7 @@ func getDetails() ([]models.Detail, error) {
 	}
 
 	for rows.Next() {
-		var detail models.Detail
+		var detail models.FeederDetail
 		err = rows.Scan(&detail.ID, &detail.FeedAt)
 		if err != nil {
 			return details, err
@@ -98,7 +98,7 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
   }
 
   // last row inserted
-  var lastFeed models.Detail
+  var lastFeed models.FeederDetail
   lastFeedQuery := "SELECT id, feed_at FROM feeder_details WHERE id = ?"
   err = db.QueryRow(lastFeedQuery, lastId).Scan(&lastFeed.ID, &lastFeed.FeedAt)
   if err != nil {

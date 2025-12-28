@@ -18,6 +18,8 @@ func InitMQTT() {
 	config.MQTTConfig["host"],
   config.MQTTConfig["port"],
 	)
+	
+	fmt.Println(config.MQTTConfig)
 
 	broker := ConnectionString
 	clientID := config.MQTTConfig["clientId"]

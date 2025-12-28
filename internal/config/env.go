@@ -7,41 +7,82 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var (
-	DBConfig = make(map[string]string)
-	MQTTConfig = make(map[string]string)
-	HTTPQueries = make(map[string]string)
-  ServerConfig = make(map[string]string)
-  ClientConfig = make(map[string]string)
-)
-
-func LoadEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	DBConfig["user"] = os.Getenv("DB_USER")
-	DBConfig["pass"] = os.Getenv("DB_PASS")
-	DBConfig["host"] = os.Getenv("DB_HOST")
-	DBConfig["port"] = os.Getenv("DB_PORT")
-	DBConfig["dbName"] = os.Getenv("DB_NAME")
-
-	MQTTConfig["host"] = os.Getenv("MQTT_HOST")
-  MQTTConfig["port"] = os.Getenv("MQTT_PORT")
-	MQTTConfig["clientId"] = os.Getenv("MQTT_USER")
-
-	HTTPQueries["user"] = os.Getenv("DB_USER")
-	HTTPQueries["pass"] = os.Getenv("DB_PASS")
-	HTTPQueries["port"] = os.Getenv("DB_PORT")
-	HTTPQueries["host"] = os.Getenv("DB_HOST")
-	HTTPQueries["dbName"] = os.Getenv("DB_NAME")
-  
-  ServerConfig["host"] = os.Getenv("DB_HOST")
-  ServerConfig["port"] = os.Getenv("SERVER_PORT")
-
-  ClientConfig["clientHost"] = os.Getenv("CLIENT_ORIGIN")
-	ClientConfig["clientPort"] = os.Getenv("CLIENT_PORT")
+type DBConfig struct {
+	User string
+	Pass string
+	Host string
+	Port string
+	Name string
 }
 
+type MQTTConfig struct {
+	Host     string
+	Port     string
+	ClientID string
+}
+
+type ServerConfig struct {
+	Port string
+}
+
+type ClientConfig struct {
+	Origin string
+	Port   string
+}
+
+var (
+	DB     DBConfig
+	MQTT   MQTTConfig
+	Server ServerConfig
+	Client ClientConfig
+)
+
+func Load() {
+
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using environment variables")
+	}
+
+	DB = DBConfig{
+		User: os.Getenv("DB_USER"),
+		Pass: os.Getenv("DB_PASS"),
+		Host: os.Getenv("DB_HOST"),
+		Port: os.Getenv("DB_PORT"),
+		Name: os.Getenv("DB_NAME"),
+	}
+
+	MQTT = MQTTConfig{
+		Host:     os.Getenv("MQTT_HOST"),
+		Port:     os.Getenv("MQTT_PORT"),
+		ClientID: os.Getenv("MQTT_CLIENT_ID"),
+	}
+
+	Server = ServerConfig{
+		Port: os.Getenv("SERVER_PORT"),
+	}
+
+	Client = ClientConfig{
+		Origin: os.Getenv("CLIENT_ORIGIN"),
+		Port:   os.Getenv("CLIENT_PORT"),
+	}
+
+	validate()
+}
+
+func validate() {
+
+	if DB.User == "" || DB.Pass == "" || DB.Host == "" || DB.Port == "" || DB.Name == "" {
+		log.Fatal("Missing required database environment variables")
+	}
+
+	if Server.Port == "" {
+		log.Fatal("PORT environment variable is required (Render sets this automatically)")
+	}
+
+	if MQTT.Host != "" && MQTT.Port == "" {
+		log.Fatal("MQTT_PORT must be set if MQTT_HOST is provided")
+	}
+
+	log.Println("Configuration loaded successfully")
+}
 

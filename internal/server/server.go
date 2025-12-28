@@ -12,7 +12,7 @@ import (
 
 func StartServer(r *mux.Router) error {
 
-  var port = ":" + config.ServerConfig["port"]
+  var port = ":" + config.Server.Port
 	
 	if port == "" {
 		port = "8000"

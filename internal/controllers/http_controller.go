@@ -25,11 +25,11 @@ func getDetails() ([]models.FeederDetail, error) {
   details := []models.FeederDetail{}
 	
 	endpointString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
-	config.HTTPQueries["user"],
-	config.HTTPQueries["pass"],
-	config.HTTPQueries["host"],
-	config.HTTPQueries["port"],
-	config.HTTPQueries["dbName"],
+	config.DB.User,
+	config.DB.Pass,
+	config.DB.Host,
+	config.DB.Port,
+	config.DB.Name,
 	)
 
 	db, err := sql.Open("mysql", endpointString)
@@ -61,12 +61,13 @@ func CreateDetail(w http.ResponseWriter, r *http.Request) {
   // fmt.Print(`Params: `, params)
   // Create endpointString
   endpointString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
-    config.HTTPQueries["user"],
-    config.HTTPQueries["pass"],
-    config.HTTPQueries["host"],
-    config.HTTPQueries["port"],
-    config.HTTPQueries["dbName"],
-  )
+		config.DB.User,
+		config.DB.Pass,
+		config.DB.Host,
+		config.DB.Port,
+		config.DB.Name,
+
+	)
 
   // Open session for sql interface
   db, err := sql.Open("mysql", endpointString)

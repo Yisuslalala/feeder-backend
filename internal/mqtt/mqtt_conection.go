@@ -12,17 +12,13 @@ var MqttClient mqtt.Client
 
 func InitMQTT() {
 
-  config.LoadEnv()
-
 	ConnectionString := fmt.Sprintf("tcp://%s:%s", 
-	config.MQTTConfig["host"],
-  config.MQTTConfig["port"],
+	config.MQTT.Host,
+  config.MQTT.Port,
 	)
 	
-	fmt.Println(config.MQTTConfig)
-
 	broker := ConnectionString
-	clientID := config.MQTTConfig["clientId"]
+	clientID := config.MQTT.ClientID
 
 	opts := mqtt.NewClientOptions().AddBroker(broker).SetClientID(clientID)
 

@@ -9,8 +9,8 @@ import (
 
 func SetupCORS(h http.Handler) http.Handler {
 
-  var host = config.ServerConfig["host"]
-  var clientPort = config.ClientConfig["clientPort"]
+  var host = config.Server.Port
+  var clientPort = config.Client.Port
 
   var serverUrl = "http://" + host  + ":" + clientPort
   var localhostUrl = "http://localhost:" + clientPort

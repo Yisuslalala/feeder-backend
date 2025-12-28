@@ -16,11 +16,11 @@ func InitDB() {
   // fmt.Println("DBConfig content:", config.DBConfig)
  
 	ConnectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		config.DBConfig["user"],
-		config.DBConfig["pass"],
-		config.DBConfig["host"],
-		config.DBConfig["port"],
-		config.DBConfig["dbName"],
+		config.DB.User,
+		config.DB.Pass,
+		config.DB.Host,
+		config.DB.Port,
+		config.DB.Name,
 	)
 
   var err error

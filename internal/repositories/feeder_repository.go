@@ -8,6 +8,10 @@ import (
 	"feeder-backend/internal/models"
 )
 
+type FeederRepository interface {
+	Create(ctx context.Context, feeder *models.Feeder) error
+}
+
 type FeederRepository struct {
 	db * sql.DB
 }

@@ -27,9 +27,9 @@ func LoadEnv() {
 	DBConfig["port"] = os.Getenv("DB_PORT")
 	DBConfig["dbName"] = os.Getenv("DB_NAME")
 
-	MQTTConfig["host"] = os.Getenv("DB_PORT")
+	MQTTConfig["host"] = os.Getenv("MQTT_HOST")
   MQTTConfig["port"] = os.Getenv("MQTT_PORT")
-	MQTTConfig["clientId"] = os.Getenv("MQTT_CLIENT_ID")
+	MQTTConfig["clientId"] = os.Getenv("MQTT_USER")
 
 	HTTPQueries["user"] = os.Getenv("DB_USER")
 	HTTPQueries["pass"] = os.Getenv("DB_PASS")
@@ -38,7 +38,7 @@ func LoadEnv() {
 	HTTPQueries["dbName"] = os.Getenv("DB_NAME")
   
   ServerConfig["host"] = os.Getenv("DB_HOST")
-  ServerConfig["port"] = os.Getenv("DB_PORT")
+  ServerConfig["port"] = os.Getenv("SERVER_PORT")
 
   ClientConfig["clientHost"] = os.Getenv("CLIENT_ORIGIN")
 	ClientConfig["clientPort"] = os.Getenv("CLIENT_PORT")

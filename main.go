@@ -7,6 +7,8 @@ import (
   "feeder-backend/internal/server"
 	config "feeder-backend/internal/config"
 
+	"fmt"
+
 	_ "github.com/eclipse/paho.mqtt.golang"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
@@ -16,8 +18,13 @@ import (
 func main() {
 
 	config.LoadEnv()
-  db.InitDB()
+  
+	fmt.Println("Load env finished")
+
+	db.InitDB()
 	mqtt.InitMQTT()
+
+	fmt.Println("Init mqtt finished")
 
 	r := mux.NewRouter()
 	routes.RegisterFeederRoutes(r)

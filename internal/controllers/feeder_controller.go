@@ -26,31 +26,39 @@ type createFeederRequest struct {
 }
 
 func (c *FeederController) Create(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var req createFeederRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, "invalid json body", http.StatusBadRequest)
-		return
-	}
-
-	feeder := &models.Feeder{
-		HouseID: req.HouseID,
-		MacAddress: req.MacAddress,
-		Name: req.Name,
-		PetType: req.PetType,
-	}
-
-	if err:= c.service.RegisterFeeder(r.Context(), feeder); err != nil {
-		http.Error(w, "error atregister feeder: " + err.Error(), http.StatusBadRequest)
-		return
-	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(feeder)
 
+	if err := json.NewDecoder(r.Body).Decode(&feeder); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(APIResponse{
+			Success: false,
+			Error: "invalid request body",
+		})
+		return
+	}
+
+	err := c.service.RegisterFeeder(r.Context(), &feeder) {
+		 if err != nil {
+			 if err == services.ErrMacAddressRequired {
+				 w.WriteHeader(http.StatusBadRequest)
+			 } else if err == services.ErrFeederAlreadyExists {
+				 w.WriteHeader(http.StatusConflict)
+			 } else {
+				 w.WriteHeader(http.StatusInternalServerError)
+			 }
+
+			 json.NewEncoder(w).Encode(APIResponse{
+				 Success: false,
+				 Error: err.Error(),
+			 })
+			 return
+		 }
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(APIResponse{
+		Success: true,
+		Data: feeder,
+	})
 }

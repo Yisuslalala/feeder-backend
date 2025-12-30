@@ -10,6 +10,7 @@ import (
 func RegisterFeederRoutes(r *mux.Router) {
 	r.HandleFunc("/details", controllers.GetFeedDetails).Methods(http.MethodGet)
   r.HandleFunc("/details", controllers.CreateDetail).Methods(http.MethodPost)
+	r.HandleFunc("/feeders", controllers.Create).Methods(http.MethodPost)
 }
 
 

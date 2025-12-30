@@ -12,17 +12,17 @@ type FeederRepository interface {
 	Create(ctx context.Context, feeder *models.Feeder) error
 }
 
-type FeederRepository struct {
-	db * sql.DB
+type feederRepository struct {
+	db *sql.DB
 }
 
-func NewFeederRepository(db *sql.DB) *FeederRepository {
-	return &FeederRepository {
+func NewFeederRepository(db *sql.DB) FeederRepository {
+	return &feederRepository{
 		db: db,
 	}
 }
 
-func (r *FeederRepository) Create(ctx context.Context, feeder *models.Feeder) error {
+func (r *feederRepository) Create(ctx context.Context, feeder *models.Feeder) error {
 	result, err := r.db.ExecContext(ctx, `
 			INSERT INTO feeders (house_id, mac_address, name, pet_type)
 			VALUES(?, ?, ?, ?)

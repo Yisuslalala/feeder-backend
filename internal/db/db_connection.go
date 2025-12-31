@@ -10,11 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var DB *sql.DB
-
-func InitDB() {
-  // fmt.Println("DBConfig content:", config.DBConfig)
- 
+func NewMySQLConnection() (*sql.DB, err) {
 	ConnectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		config.DB.User,
 		config.DB.Pass,
@@ -23,18 +19,20 @@ func InitDB() {
 		config.DB.Name,
 	)
 
-  var err error
-	DB, err = sql.Open("mysql", ConnectionString)
+	db, err = sql.Open("mysql", ConnectionString)
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		return nil, fmt.Errorf("Failed to connect to database: %w", err)
 	}
 
 	if err := DB.Ping(); err != nil {
-		log.Fatal("Database connection is not active:", err)
+		return nil, fmt.Errorf("Database connection is not active: %w", err)
 	}
 
   // Some documentation recommendations
   DB.SetConnMaxLifetime(time.Minute * 3)
   DB.SetMaxOpenConns(1)
   DB.SetMaxIdleConns(1)
+
+	return db, nil
 }
+

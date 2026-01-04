@@ -2,15 +2,14 @@ package db
 
 import (
 	"database/sql"
-	"feeder-backend/internal/config"
+	config "feeder-backend/internal/config"
 	"fmt"
   "time"
-	"log"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func NewMySQLConnection() (*sql.DB, err) {
+func NewMySQLConnection() (*sql.DB, error) {
 	ConnectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		config.DB.User,
 		config.DB.Pass,
@@ -19,19 +18,19 @@ func NewMySQLConnection() (*sql.DB, err) {
 		config.DB.Name,
 	)
 
-	db, err = sql.Open("mysql", ConnectionString)
+	db, err := sql.Open("mysql", ConnectionString)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to connect to database: %w", err)
 	}
 
-	if err := DB.Ping(); err != nil {
+	if err := db.Ping(); err != nil {
 		return nil, fmt.Errorf("Database connection is not active: %w", err)
 	}
 
   // Some documentation recommendations
-  DB.SetConnMaxLifetime(time.Minute * 3)
-  DB.SetMaxOpenConns(1)
-  DB.SetMaxIdleConns(1)
+  db.SetConnMaxLifetime(time.Minute * 3)
+  db.SetMaxOpenConns(1)
+	db.SetMaxIdleConns(1)
 
 	return db, nil
 }

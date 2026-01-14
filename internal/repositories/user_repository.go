@@ -93,7 +93,7 @@ func (r *userRepository) FindByID(ctx context.Context, id int64) (*models.User, 
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("find user by id: %w", err)
+		return nil, nil
 	}
 
 	return &user, nil

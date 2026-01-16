@@ -11,7 +11,7 @@ import (
 )
 
 type UserService interface {
-	RegisterUser(ctx context.Context, email, password, role string) (*models.User, error)
+	RegisterUser(ctx context.Context, email, password string) (*models.User, error)
 }
 
 type userService struct {
@@ -24,7 +24,7 @@ func NewUserService(userRepo repositories.UserRepository) UserService {
 	}
 }
 
-func (s *userService) RegisterUser(ctx context.Context, email, password, role string) (*models.User, error) {
+func (s *userService) RegisterUser(ctx context.Context, email, password string) (*models.User, error) {
 	if email == "" {
 		return nil, errors.New("email is required")
 	}

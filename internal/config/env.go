@@ -30,11 +30,16 @@ type ClientConfig struct {
 	Port   string
 }
 
+type JWTConfig struct {
+	Secret string
+}
+
 var (
 	DB     DBConfig
 	MQTT   MQTTConfig
 	Server ServerConfig
 	Client ClientConfig
+	JWT    JWTConfig
 )
 
 func Load() {
@@ -66,6 +71,10 @@ func Load() {
 		Port:   os.Getenv("CLIENT_PORT"),
 	}
 
+	JWT = JWTConfig {
+		Secret: os.Getenv("JWT_SECRET")
+	}
+
 	validate()
 }
 
@@ -81,6 +90,14 @@ func validate() {
 
 	if MQTT.Host != "" && MQTT.Port == "" {
 		log.Fatal("MQTT_PORT must be set if MQTT_HOST is provided")
+	}
+	
+	if JWT.Secret == "" {
+		log.Fatal("JWT_SECRET is required")
+	}
+
+	if len(JWT.Secret) < 32 {
+		log.Fatal("JWT_SECRET must contain 32 characters")
 	}
 
 	log.Println("Configuration loaded successfully")

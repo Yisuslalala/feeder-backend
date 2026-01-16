@@ -72,7 +72,7 @@ func Load() {
 	}
 
 	JWT = JWTConfig {
-		Secret: os.Getenv("JWT_SECRET")
+		Secret: os.Getenv("JWT_SECRET"),
 	}
 
 	validate()

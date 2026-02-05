@@ -1,9 +1,9 @@
 package mqtt
 
 import (
-	"fmt"
 	"feeder-backend/internal/config"
-  "log"
+	"fmt"
+	"log"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -12,11 +12,11 @@ var MqttClient mqtt.Client
 
 func InitMQTT() {
 
-	ConnectionString := fmt.Sprintf("tcp://%s:%s", 
-	config.MQTT.Host,
-  config.MQTT.Port,
+	ConnectionString := fmt.Sprintf("tcp://%s:%s",
+		config.MQTT.Host,
+		config.MQTT.Port,
 	)
-	
+
 	broker := ConnectionString
 	clientID := config.MQTT.ClientID
 
@@ -31,4 +31,3 @@ func InitMQTT() {
 	}
 	fmt.Println("Connected to MQTT broker")
 }
-

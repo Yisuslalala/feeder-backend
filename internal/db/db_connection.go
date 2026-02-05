@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	config "feeder-backend/internal/config"
 	"fmt"
-  "time"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -27,11 +27,10 @@ func NewMySQLConnection() (*sql.DB, error) {
 		return nil, fmt.Errorf("Database connection is not active: %w", err)
 	}
 
-  // Some documentation recommendations
-  db.SetConnMaxLifetime(time.Minute * 3)
-  db.SetMaxOpenConns(1)
+	// Some documentation recommendations
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(1)
 	db.SetMaxIdleConns(1)
 
 	return db, nil
 }
-

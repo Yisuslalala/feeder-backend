@@ -3,18 +3,18 @@ package utils
 import (
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
 	"feeder-backend/internal/config"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type Claims struct {
-	Email  string `json:"email"`
+	Email string `json:"email"`
 	jwt.RegisteredClaims
 }
 
 func GenerateToken(email string) (string, error) {
 	claims := Claims{
-		Email:  email,
+		Email: email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 		},
@@ -26,3 +26,18 @@ func GenerateToken(email string) (string, error) {
 	return token.SignedString([]byte(secret))
 }
 
+func ValidateToken(tokenString string) (*Claims, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(config.JWT.Secret), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+		return claims, nil
+	}
+
+	return nil, jwt.ErrSignatureInvalid
+}

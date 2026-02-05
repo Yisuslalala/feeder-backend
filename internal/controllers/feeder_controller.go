@@ -19,10 +19,10 @@ func NewFeederController(service services.FeederService) *FeederController {
 }
 
 type createFeederRequest struct {
-	HouseID int64 `json:"house_id"`
+	HouseID    int64  `json:"house_id"`
 	MacAddress string `json:"mac_address"`
-	Name string `json:"name"`
-	PetType string `json:"pet_type"`
+	Name       string `json:"name"`
+	PetType    string `json:"pet_type"`
 }
 
 func (c *FeederController) Create(w http.ResponseWriter, r *http.Request) {
@@ -35,16 +35,16 @@ func (c *FeederController) Create(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(APIResponse{
 			Success: false,
-			Error: "invalid request body",
+			Error:   "invalid request body",
 		})
 		return
 	}
-  
+
 	feeder := models.Feeder{
-		HouseID: req.HouseID,
+		HouseID:    req.HouseID,
 		MacAddress: req.MacAddress,
-		Name: req.Name,
-		PetType: req.PetType,
+		Name:       req.Name,
+		PetType:    req.PetType,
 	}
 
 	err := c.service.RegisterFeeder(r.Context(), &feeder)
@@ -59,7 +59,7 @@ func (c *FeederController) Create(w http.ResponseWriter, r *http.Request) {
 
 		json.NewEncoder(w).Encode(APIResponse{
 			Success: false,
-			Error: err.Error(),
+			Error:   err.Error(),
 		})
 		return
 	}
@@ -67,6 +67,6 @@ func (c *FeederController) Create(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(APIResponse{
 		Success: true,
-		Data: feeder,
+		Data:    feeder,
 	})
 }

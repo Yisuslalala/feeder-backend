@@ -11,7 +11,7 @@ import (
 )
 
 func GetFeedDetails(w http.ResponseWriter, r *http.Request) {
-		
+
 	details, err := getDetails()
 	if err == nil {
 		responseSuccess(details, w)
@@ -21,15 +21,15 @@ func GetFeedDetails(w http.ResponseWriter, r *http.Request) {
 }
 
 func getDetails() ([]models.FeederDetail, error) {
-	
-  details := []models.FeederDetail{}
-	
+
+	details := []models.FeederDetail{}
+
 	endpointString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
-	config.DB.User,
-	config.DB.Pass,
-	config.DB.Host,
-	config.DB.Port,
-	config.DB.Name,
+		config.DB.User,
+		config.DB.Pass,
+		config.DB.Host,
+		config.DB.Port,
+		config.DB.Name,
 	)
 
 	db, err := sql.Open("mysql", endpointString)
@@ -57,71 +57,70 @@ func getDetails() ([]models.FeederDetail, error) {
 
 // TODO: Create function for adding a new feed detail
 func CreateDetail(w http.ResponseWriter, r *http.Request) {
-  // params := mux.Vars(r)
-  // fmt.Print(`Params: `, params)
-  // Create endpointString
-  endpointString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	// params := mux.Vars(r)
+	// fmt.Print(`Params: `, params)
+	// Create endpointString
+	endpointString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 		config.DB.User,
 		config.DB.Pass,
 		config.DB.Host,
 		config.DB.Port,
 		config.DB.Name,
-
 	)
 
-  // Open session for sql interface
-  db, err := sql.Open("mysql", endpointString)
-  if err != nil {
-    fmt.Println("Error at opening sql interface")
-    return
-  }
-  // Prepare sql query
-  query, err := db.Prepare("INSERT INTO feeder_details VALUES()")
-  if err != nil {
-    fmt.Println("Error at prepare sql query")
-    return
-  }
+	// Open session for sql interface
+	db, err := sql.Open("mysql", endpointString)
+	if err != nil {
+		fmt.Println("Error at opening sql interface")
+		return
+	}
+	// Prepare sql query
+	query, err := db.Prepare("INSERT INTO feeder_details VALUES()")
+	if err != nil {
+		fmt.Println("Error at prepare sql query")
+		return
+	}
 
-  defer query.Close()
+	defer query.Close()
 
-  // Execute it and handle errors
-  newFeed, err := query.Exec()
-  // fmt.Println("res", res)
-  if err != nil {
-    http.Error(w, "Failed to create feeding", http.StatusInternalServerError)
-    return
-  }
+	// Execute it and handle errors
+	newFeed, err := query.Exec()
+	// fmt.Println("res", res)
+	if err != nil {
+		http.Error(w, "Failed to create feeding", http.StatusInternalServerError)
+		return
+	}
 
-  lastId, err := newFeed.LastInsertId()
-  if err != nil {
-    http.Error(w, "Failed to get last id", http.StatusInternalServerError)
-    return
-  }
+	lastId, err := newFeed.LastInsertId()
+	if err != nil {
+		http.Error(w, "Failed to get last id", http.StatusInternalServerError)
+		return
+	}
 
-  // last row inserted
-  var lastFeed models.FeederDetail
-  lastFeedQuery := "SELECT id, feed_at FROM feeder_details WHERE id = ?"
-  err = db.QueryRow(lastFeedQuery, lastId).Scan(&lastFeed.ID, &lastFeed.FeedAt)
-  if err != nil {
-    http.Error(w, "Failed to retrieve last detail inserted", http.StatusInternalServerError)
-    return
-  }
+	// last row inserted
+	var lastFeed models.FeederDetail
+	lastFeedQuery := "SELECT id, feed_at FROM feeder_details WHERE id = ?"
+	err = db.QueryRow(lastFeedQuery, lastId).Scan(&lastFeed.ID, &lastFeed.FeedAt)
+	if err != nil {
+		http.Error(w, "Failed to retrieve last detail inserted", http.StatusInternalServerError)
+		return
+	}
 
-  // Add move motor mqtt controller
-  PublishMessage("/motor", "ON")
-  if err != nil {
-    http.Error(w, "Failed to activate motor" , http.StatusInternalServerError)
-    return
-  }
+	// Add move motor mqtt controller
+	PublishMessage("/motor", "ON")
+	if err != nil {
+		http.Error(w, "Failed to activate motor", http.StatusInternalServerError)
+		return
+	}
 
-  w.WriteHeader(http.StatusCreated)
-  json.NewEncoder(w).Encode(lastFeed)
-  fmt.Println("Feeding detail created successfully")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(lastFeed)
+	fmt.Println("Feeding detail created successfully")
 }
 
 func responseSuccess(data interface{}, w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
-  w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(data)
 }
 

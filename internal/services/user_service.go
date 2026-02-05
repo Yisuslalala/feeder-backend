@@ -13,6 +13,7 @@ import (
 type UserService interface {
 	RegisterMember(ctx context.Context, email, password string) (*models.User, error)
 	RegisterAdmin(ctx context.Context, email, password string) (*models.User, error)
+	Login(ctx context.Context, email, password string) (*models.User, error)
 }
 
 type userService struct {
@@ -20,7 +21,7 @@ type userService struct {
 }
 
 func NewUserService(userRepo repositories.UserRepository) UserService {
-	return &userService {
+	return &userService{
 		userRepo: userRepo,
 	}
 }
@@ -40,19 +41,19 @@ func (s *userService) RegisterMember(ctx context.Context, email, password string
 	}
 
 	if existing != nil {
-		return nil, errors.New("email already in use")
+		return nil, ErrEmailAlreadyExists
 	}
-	
+
 	// hash password
 	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
 		return nil, fmt.Errorf("hash password: %w", err)
 	}
 
-	user := &models.User {
-		Email: email,
-		Password: hashedPassword,
-		Role: "member",
+	user := &models.User{
+		Email:    email,
+		PasswordHash: hashedPassword,
+		Role:     "member",
 	}
 	if err := s.userRepo.Create(ctx, user); err != nil {
 		return nil, fmt.Errorf("create member: %w", err)
@@ -76,21 +77,48 @@ func (s *userService) RegisterAdmin(ctx context.Context, email, password string)
 	}
 
 	if existing != nil {
-		return nil, errors.New("email already in use")
+		return nil, ErrEmailAlreadyExists
 	}
-	
+
 	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
 		return nil, fmt.Errorf("hash password: %w", err)
 	}
 
-	user := &models.User {
-		Email: email,
-		Password: hashedPassword,
-		Role: "admin",
+	user := &models.User{
+		Email:    email,
+		PasswordHash: hashedPassword,
+		Role:     "admin",
 	}
 	if err := s.userRepo.Create(ctx, user); err != nil {
 		return nil, fmt.Errorf("create admin: %w", err)
+	}
+
+	return user, nil
+}
+
+func (s *userService) Login(ctx context.Context, email, password string) (*models.User, error) {
+	if email == "" {
+		return nil, errors.New("email is required")
+	}
+
+	if password == "" {
+		return nil, errors.New("password is required")
+	}
+
+	user, err := s.userRepo.FindByEmail(ctx, email)
+	
+	if err != nil {
+		return nil, fmt.Errorf("find user by email %w", err)
+	}
+
+	if user == nil {
+		return nil, ErrInvalidCredentials
+	}
+
+	err = utils.CheckPassword(user.PasswordHash, password)
+	if err != nil {
+		return nil, ErrInvalidCredentials
 	}
 
 	return user, nil

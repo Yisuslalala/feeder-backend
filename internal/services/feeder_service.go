@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"feeder-backend/internal/models"
- 	"feeder-backend/internal/repositories"
+	"feeder-backend/internal/repositories"
 )
 
 // Defines what the service does
@@ -24,7 +24,7 @@ func NewFeederService(repo repositories.FeederRepository) FeederService {
 	}
 }
 
-func (s *feederService) RegisterFeeder(ctx context.Context, feeder *models.Feeder) error  {
+func (s *feederService) RegisterFeeder(ctx context.Context, feeder *models.Feeder) error {
 	if feeder.HouseID == 0 {
 		return errors.New("house_id is required")
 	}
@@ -32,11 +32,10 @@ func (s *feederService) RegisterFeeder(ctx context.Context, feeder *models.Feede
 	if feeder.MacAddress == "" {
 		return errors.New("mac_address is required")
 	}
-		
+
 	if err := s.repo.Create(ctx, feeder); err != nil {
 		return fmt.Errorf("register feeder: %w", err)
 	}
 
 	return nil
 }
-

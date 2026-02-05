@@ -1,13 +1,14 @@
 package repositories
 
-import (	
-	"fmt"
+import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"feeder-backend/internal/models"
 )
+
 type UserRepository interface {
 	Create(ctx context.Context, user *models.User) error
 	FindByEmail(ctx context.Context, email string) (*models.User, error)
@@ -26,12 +27,12 @@ func NewUserRepository(db *sql.DB) UserRepository {
 
 func (r *userRepository) Create(ctx context.Context, user *models.User) error {
 	result, err := r.db.ExecContext(ctx, `
-		INSERT INTO users (email, password, role)
-		VALUES(?, ?, ?)
+		INSERT INTO users (email, name, password_hash, role)
+		VALUES(?, ?, ?, ?)
 	`,
-		user.Email, user.Password, user.Role,
+		user.Email, user.Name, user.PasswordHash, user.Role,
 	)
-	
+
 	if err != nil {
 		return fmt.Errorf("create user: %w", err)
 	}
@@ -40,7 +41,7 @@ func (r *userRepository) Create(ctx context.Context, user *models.User) error {
 	if err != nil {
 		return fmt.Errorf("get last insert id: %w", err)
 	}
-	
+
 	user.ID = id
 	return nil
 }
@@ -51,13 +52,13 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models
 		FROM users
 		WHERE email = ?
 	`, email)
-	
+
 	var user models.User
 
 	err := row.Scan(
 		&user.ID,
 		&user.Email,
-		&user.Password,
+		&user.PasswordHash,
 		&user.Role,
 	)
 
@@ -78,13 +79,13 @@ func (r *userRepository) FindByID(ctx context.Context, id int64) (*models.User, 
 		FROM users
 		WHERE id = ?
 	`, id)
-	
+
 	var user models.User
 
 	err := row.Scan(
 		&user.ID,
 		&user.Email,
-		&user.Password,
+		&user.PasswordHash,
 		&user.Role,
 	)
 

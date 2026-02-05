@@ -71,7 +71,7 @@ func Load() {
 		Port:   os.Getenv("CLIENT_PORT"),
 	}
 
-	JWT = JWTConfig {
+	JWT = JWTConfig{
 		Secret: os.Getenv("JWT_SECRET"),
 	}
 
@@ -91,7 +91,7 @@ func validate() {
 	if MQTT.Host != "" && MQTT.Port == "" {
 		log.Fatal("MQTT_PORT must be set if MQTT_HOST is provided")
 	}
-	
+
 	if JWT.Secret == "" {
 		log.Fatal("JWT_SECRET is required")
 	}
@@ -102,4 +102,3 @@ func validate() {
 
 	log.Println("Configuration loaded successfully")
 }
-

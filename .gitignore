@@ -31,3 +31,4 @@ env
 ./.git/hooks/pre-applypatch.sample
 ./.git/hooks/pre-push.sample
 ./.git/hooks/pre-commit.sample
+.neon

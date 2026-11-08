@@ -2,35 +2,29 @@ package db
 
 import (
 	"database/sql"
-	config "feeder-backend/internal/config"
 	"fmt"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	config "feeder-backend/internal/config"
+
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-func NewMySQLConnection() (*sql.DB, error) {
-	ConnectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		config.DB.User,
-		config.DB.Pass,
-		config.DB.Host,
-		config.DB.Port,
-		config.DB.Name,
-	)
-
-	db, err := sql.Open("mysql", ConnectionString)
+func NewConnection() (*sql.DB, error) {
+	db, err := sql.Open("pgx", config.DB.URL)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to connect to database: %w", err)
+		return nil, fmt.Errorf("failed to connect to database: %w", err)
 	}
 
 	if err := db.Ping(); err != nil {
-		return nil, fmt.Errorf("Database connection is not active: %w", err)
+		db.Close()
+		return nil, fmt.Errorf("database connection is not active: %w", err)
 	}
 
 	// Some documentation recommendations
 	db.SetConnMaxLifetime(time.Minute * 3)
-	db.SetMaxOpenConns(1)
-	db.SetMaxIdleConns(1)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
 
 	return db, nil
 }

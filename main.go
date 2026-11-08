@@ -13,7 +13,6 @@ import (
 	"feeder-backend/internal/services"
 
 	_ "github.com/eclipse/paho.mqtt.golang"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
@@ -21,7 +20,7 @@ func main() {
 
 	config.Load()
 
-	database, err := db.NewMySQLConnection()
+	database, err := db.NewConnection()
 	if err != nil {
 		log.Fatalf("error with database: %v", err)
 	}

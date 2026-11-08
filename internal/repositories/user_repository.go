@@ -26,31 +26,26 @@ func NewUserRepository(db *sql.DB) UserRepository {
 }
 
 func (r *userRepository) Create(ctx context.Context, user *models.User) error {
-	result, err := r.db.ExecContext(ctx, `
+	err := r.db.QueryRowContext(ctx, `
 		INSERT INTO users (email, name, password_hash, role)
-		VALUES(?, ?, ?, ?)
+		VALUES ($1, $2, $3, $4)
+		RETURNING id
 	`,
 		user.Email, user.Name, user.PasswordHash, user.Role,
-	)
+	).Scan(&user.ID)
 
 	if err != nil {
 		return fmt.Errorf("create user: %w", err)
 	}
 
-	id, err := result.LastInsertId()
-	if err != nil {
-		return fmt.Errorf("get last insert id: %w", err)
-	}
-
-	user.ID = id
 	return nil
 }
 
 func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models.User, error) {
 	row := r.db.QueryRowContext(ctx, `
-		SELECT id, email, password, role
+		SELECT id, email, password_hash, role
 		FROM users
-		WHERE email = ?
+		WHERE lower(email) = lower($1) AND deleted_at IS NULL
 	`, email)
 
 	var user models.User
@@ -62,8 +57,8 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models
 		&user.Role,
 	)
 
-	if err == sql.ErrNoRows {
-		return nil, errors.New("user not found by email")
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
 	}
 
 	if err != nil {
@@ -75,9 +70,9 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*models
 
 func (r *userRepository) FindByID(ctx context.Context, id int64) (*models.User, error) {
 	row := r.db.QueryRowContext(ctx, `
-		SELECT id, email, password, role
+		SELECT id, email, password_hash, role
 		FROM users
-		WHERE id = ?
+		WHERE id = $1 AND deleted_at IS NULL
 	`, id)
 
 	var user models.User
@@ -89,12 +84,12 @@ func (r *userRepository) FindByID(ctx context.Context, id int64) (*models.User, 
 		&user.Role,
 	)
 
-	if err == sql.ErrNoRows {
-		return nil, errors.New("user not found by id")
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, nil
 	}
 
 	if err != nil {
-		return nil, nil
+		return nil, fmt.Errorf("find user by id: %w", err)
 	}
 
 	return &user, nil

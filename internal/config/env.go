@@ -8,11 +8,7 @@ import (
 )
 
 type DBConfig struct {
-	User string
-	Pass string
-	Host string
-	Port string
-	Name string
+	URL string
 }
 
 type MQTTConfig struct {
@@ -49,11 +45,7 @@ func Load() {
 	}
 
 	DB = DBConfig{
-		User: os.Getenv("DB_USER"),
-		Pass: os.Getenv("DB_PASS"),
-		Host: os.Getenv("DB_HOST"),
-		Port: os.Getenv("DB_PORT"),
-		Name: os.Getenv("DB_NAME"),
+		URL: os.Getenv("DATABASE_URL"),
 	}
 
 	MQTT = MQTTConfig{
@@ -80,8 +72,8 @@ func Load() {
 
 func validate() {
 
-	if DB.User == "" || DB.Pass == "" || DB.Host == "" || DB.Port == "" || DB.Name == "" {
-		log.Fatal("Missing required database environment variables")
+	if DB.URL == "" {
+		log.Fatal("DATABASE_URL must be configured")
 	}
 
 	if Server.Port == "" {

@@ -26,7 +26,7 @@ func main() {
 
 	mqttClient, err := mqtt.NewClient(config.MQTT)
 	if err != nil {
-		log.Println("warning: MQTT unavailable, starting without it: %v", err)
+		log.Printf("warning: MQTT unavailable, starting without it: %v", err)
 	} else {
 		defer mqttClient.Disconnect(250)
 	}

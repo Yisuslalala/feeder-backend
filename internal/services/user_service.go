@@ -51,9 +51,9 @@ func (s *userService) RegisterMember(ctx context.Context, email, password string
 	}
 
 	user := &models.User{
-		Email:    email,
+		Email:        email,
 		PasswordHash: hashedPassword,
-		Role:     "member",
+		Role:         "member",
 	}
 	if err := s.userRepo.Create(ctx, user); err != nil {
 		return nil, fmt.Errorf("create member: %w", err)
@@ -86,9 +86,9 @@ func (s *userService) RegisterAdmin(ctx context.Context, email, password string)
 	}
 
 	user := &models.User{
-		Email:    email,
+		Email:        email,
 		PasswordHash: hashedPassword,
-		Role:     "admin",
+		Role:         "admin",
 	}
 	if err := s.userRepo.Create(ctx, user); err != nil {
 		return nil, fmt.Errorf("create admin: %w", err)
@@ -107,7 +107,7 @@ func (s *userService) Login(ctx context.Context, email, password string) (*model
 	}
 
 	user, err := s.userRepo.FindByEmail(ctx, email)
-	
+
 	if err != nil {
 		return nil, fmt.Errorf("find user by email %w", err)
 	}

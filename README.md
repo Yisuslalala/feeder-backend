@@ -1,13 +1,13 @@
 # Feeder Backend
 
-REST API for an IoT pet feeder, written in Go. It registers users and feeder devices in MySQL, and talks to the physical feeder over MQTT to trigger the motor that dispenses food.
+REST API for an IoT pet feeder, written in Go. It registers users and feeder devices in PostgreSQL (hosted on Neon), and talks to the physical feeder over MQTT to trigger the motor that dispenses food.
 
 The web client lives in [feeder-frontend](https://github.com/Yisuslalala/feeder-frontend).
 
 ## Tech stack
 
 - Go 1.24 with [Gorilla Mux](https://github.com/gorilla/mux) for routing
-- MySQL through `database/sql` and `go-sql-driver/mysql`
+- PostgreSQL on [Neon](https://neon.tech/) through `database/sql` and `jackc/pgx`
 - MQTT through [Eclipse Paho](https://github.com/eclipse/paho.mqtt.golang)
 - JWT (HS256) for authentication and bcrypt for password hashing
 - Configuration from environment variables, with `.env` support for local development
@@ -25,7 +25,7 @@ flowchart LR
         Controllers --> Services
         Services --> Repositories
     end
-    Repositories --> MySQL[(MySQL)]
+    Repositories --> Postgres[(Postgres on Neon)]
     Controllers -->|publish| Broker[MQTT broker]
     Broker --> Device[Feeder device]
 ```
@@ -42,7 +42,7 @@ flowchart LR
 
 ## Data model
 
-The schema is in [`sql/database.sql`](sql/database.sql).
+The schema is in [`sql/database.postgres.sql`](sql/database.postgres.sql).
 
 - `users`: accounts with a unique email and a bcrypt password hash
 - `houses`: a household owned by one user
@@ -68,23 +68,18 @@ Protected routes go under `/api/user` and require the header `Authorization: Bea
 
 ## Running locally
 
-You need Go 1.24 or later, a MySQL server and an MQTT broker such as [Mosquitto](https://mosquitto.org/). The server exits at startup if it cannot reach the database or the broker.
+You need Go 1.24 or later, a Postgres database (a Neon project works) and an MQTT broker such as [Mosquitto](https://mosquitto.org/). The server exits at startup if it cannot reach the database or the broker.
 
-1. Create the database and load the schema:
+1. Load the schema into your database:
 
    ```bash
-   mysql -u root -p -e "CREATE DATABASE feeder"
-   mysql -u root -p feeder < sql/database.sql
+   psql "$DATABASE_URL_UNPOOLED" -f sql/database.postgres.sql
    ```
 
 2. Create a `.env` file in the project root:
 
    ```env
-   DB_USER=root
-   DB_PASS=your_password
-   DB_HOST=localhost
-   DB_PORT=3306
-   DB_NAME=feeder
+   DATABASE_URL=postgresql://user:password@ep-xxxx-pooler.region.aws.neon.tech/neondb?sslmode=require
    MQTT_HOST=localhost
    MQTT_PORT=1883
    MQTT_CLIENT_ID=feeder-backend
@@ -104,12 +99,12 @@ You need Go 1.24 or later, a MySQL server and an MQTT broker such as [Mosquitto]
 
 ## Deployment
 
-The API is deployed on [Render](https://render.com/), with the MySQL database hosted on AWS. In production the same variables are set in the environment instead of a `.env` file.
+The API is deployed on [Render](https://render.com/), with the Postgres database hosted on Neon. In production the same variables are set in the environment instead of a `.env` file.
 
 ## Status
 
 This is a personal project under active development. It started as a single-feeder prototype and is being migrated to a multi-user model with houses and several feeders per house.
 
-- Done: layered architecture, configuration, MySQL and MQTT connections, user registration and login, feeder registration, JWT middleware
+- Done: layered architecture, configuration, Postgres and MQTT connections, user registration and login, feeder registration, JWT middleware
 - In progress: moving the feeding endpoints (`/details`) and the MQTT motor command into the new service and repository layers, and protecting feeder routes with JWT
 - Planned: house management endpoints, feeding schedules, device status reported back over MQTT

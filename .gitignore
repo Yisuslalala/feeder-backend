@@ -32,3 +32,5 @@ env
 ./.git/hooks/pre-push.sample
 ./.git/hooks/pre-commit.sample
 .neon
+/main
+!.env.example

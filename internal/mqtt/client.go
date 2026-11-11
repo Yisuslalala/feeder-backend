@@ -39,7 +39,7 @@ func NewClient(cfg config.MQTTConfig) (paho.Client, error) {
 	}
 
 	if err := token.Error(); err != nil {
-		return nil, fmt.Errorf("conneting to MQTT broker %s: %w", broker, err)
+		return nil, fmt.Errorf("connecting to MQTT broker %s: %w", broker, err)
 	}
 
 	log.Println("connection to MQTT broker", broker)

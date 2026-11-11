@@ -15,6 +15,8 @@ type MQTTConfig struct {
 	Host     string
 	Port     string
 	ClientID string
+	User     string
+	Password string
 }
 
 type ServerConfig struct {
@@ -52,6 +54,8 @@ func Load() {
 		Host:     os.Getenv("MQTT_HOST"),
 		Port:     os.Getenv("MQTT_PORT"),
 		ClientID: os.Getenv("MQTT_CLIENT_ID"),
+		User:     os.Getenv("MQTT_USER"),
+		Password: os.Getenv("MQTT_PASS"),
 	}
 
 	Server = ServerConfig{

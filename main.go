@@ -12,7 +12,6 @@ import (
 	"feeder-backend/internal/server"
 	"feeder-backend/internal/services"
 
-	_ "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gorilla/mux"
 )
 
@@ -25,7 +24,12 @@ func main() {
 		log.Fatalf("error with database: %v", err)
 	}
 
-	mqtt.InitMQTT()
+	mqttClient, err := mqtt.NewClient(config.MQTT)
+	if err != nil {
+		log.Println("warning: MQTT unavailable, starting without it: %v", err)
+	} else {
+		defer mqttClient.Disconnect(250)
+	}
 
 	feederRepo := repositories.NewFeederRepository(database)
 
